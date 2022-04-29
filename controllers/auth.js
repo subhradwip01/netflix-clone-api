@@ -85,7 +85,6 @@ exports.postLogin=async(req,res,next)=>{
     // Creating jwt token for auth
     const token= await jwt.sign({id:userExist._id,isAdmin:userExist.isAdmin},process.env.PRIVATE_KEY,{expiresIn:'1d'})
     const {password:pass,...info}=userExist._doc
-    console.log(info)
     res.status(200).json({
         message:"Login Successfull",
         userInfo:{...info,token}
