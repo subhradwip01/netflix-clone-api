@@ -12,7 +12,7 @@ exports.updateUser= async (req,res,next)=>{
       const password=req.body.password;
       const profilePic=req.body.profilePic;
       
-      const existUser=await User.findById(userId);
+      const existUser=await User.findById({_id:userId});
       if(!existUser){
           res.status(404).json({
               message:"User doesn't exist"
@@ -60,6 +60,26 @@ exports.updateUser= async (req,res,next)=>{
     }
 
     }else{
-        res.status(403).json("You can only update your account")
+        res.status(403).json("You can only update your account or admin can")
+    }
+}
+
+exports.deleteUser= async (req,res,next)=>{
+    const userId=req.params.userId;
+    if(userId===req.userInfo.id || req.userInfo.isAdmin){
+        try{
+        await User.findByIdAndDelete({_id:userId})
+        res.status(200).json({
+            message:"Dleted successfully"
+        })
+        }catch(e){
+            res.status(403).json({
+                message:e.message
+            })
+        }
+    }else{
+        res.status(403).json({
+            message:"Only user or admin can delete"
+        }) 
     }
 }
