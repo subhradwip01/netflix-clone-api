@@ -117,9 +117,10 @@ exports.getUserDetails= async (req,res,next)=>{
 
 exports.getAllUsers = async (req,res,next)=>{
     let latest=req.query.latest
+    console.log(req.userInfo)
     if(req.userInfo.isAdmin){
         try{
-        const allUsers=latest ? await User.find().limit(10) : await User.find()
+        const allUsers=latest ? await User.find().sort({_id:-1}).limit(10) : await User.find()
         res.status(200).json({
             users:allUsers
         })
