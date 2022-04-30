@@ -101,7 +101,7 @@ exports.postLogin=async(req,res,next)=>{
             message=e.message
         }
         res.status(statusCode).json({
-            message:e.message
+            message:message
         })
    }
 }
