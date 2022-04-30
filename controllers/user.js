@@ -1,6 +1,7 @@
 const User=require("../models/User")
 const bcrypt=require("bcryptjs");
 const { json } = require("body-parser");
+const { find } = require("../models/User");
 
 exports.updateUser= async (req,res,next)=>{
     // Only logged in user can update user and admin
@@ -80,6 +81,56 @@ exports.deleteUser= async (req,res,next)=>{
     }else{
         res.status(403).json({
             message:"Only user or admin can delete"
+        }) 
+    }
+}
+
+exports.getUserDetails= async (req,res,next)=>{
+    const userId=req.params.userId;
+    const isEdit=req.query.isEdit;
+    if(userId===req.userInfo.id || req.userInfo.isAdmin){
+        try{
+        const userDetails=await User.findById({_id:userId})
+        
+        if(isEdit){
+          info=userDetails._doc
+        }else{
+            const {password,...user}=userDetails._doc
+            info=user
+        }
+        
+        res.status(200).json({
+            userInfo:info
+        })
+        }catch(e){
+            res.status(403).json({
+                message:e.message
+            })
+        }
+    }else{
+        res.status(403).json({
+            message:"Only user or admin can see the deayils of a user"
+        }) 
+    }
+}
+
+
+exports.getAllUsers = async (req,res,next)=>{
+    let latest=req.query.latest
+    if(req.userInfo.isAdmin){
+        try{
+        const allUsers=latest ? await User.find().limit(10) : await User.find()
+        res.status(200).json({
+            users:allUsers
+        })
+    }catch(e){
+        res.status(403).json({
+            message:"Unable to fetch users"
+        }) 
+    }
+    }else{
+        res.status(403).json({
+            message:"Only admin can see all users"
         }) 
     }
 }
