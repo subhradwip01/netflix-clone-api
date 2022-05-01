@@ -135,3 +135,48 @@ exports.getAllUsers = async (req,res,next)=>{
         }) 
     }
 }
+
+exports.getUserStates=async (req,res,next)=>{
+
+    if(req.userInfo.isAdmin){
+        const date=new Date();
+    const lastYear=date.setFullYear(date.setFullYear()-1);
+    const months=[
+        "Januray",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ]
+
+    try{
+        const data=await User.aggregate([
+            {
+                $project:{
+                    month:{$month:"$createdAt"}
+                }
+            },{
+                $group:{
+                    _id:"$month",
+                    total: {$sum:1}
+                }
+            }
+        ])
+        res.status(200).json(data)
+    }catch(err){
+        res.status(500).json(err)
+    }
+    }else{
+        res.status(403).json({
+            message:"Only admin can see stats"
+        })
+    }
+    
+}
