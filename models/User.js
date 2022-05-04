@@ -24,7 +24,13 @@ const User=new Schema({
     isAdmin:{
       type:Boolean,
       default:false,
-    }
+    },
+    watchList:[
+        {
+            type:Schema.Types.ObjectId,
+            ref:"Movie"
+        }
+    ]
 
 },{
     timestamps: true
