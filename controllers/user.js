@@ -1,7 +1,6 @@
 const User=require("../models/User")
 const bcrypt=require("bcryptjs");
-const { json } = require("body-parser");
-const { find } = require("../models/User");
+const Movie=require("../models/Movie");
 
 exports.updateUser= async (req,res,next)=>{
     // Only logged in user can update user and admin
@@ -179,4 +178,102 @@ exports.getUserStates=async (req,res,next)=>{
         })
     }
     
+}
+
+exports.addWatchList= async (req,res,next)=>{
+    const movieId=req.query.movieId
+    if(req.userInfo.isAdmin ||  req.userInfo.userId){
+        try{
+        const user=await User.findById(req.userInfo.userId);
+        const watchList=user.watchList;
+        const updatedWatchList=[...watchList];
+        for(let i=0;i<updatedWatchList.length;i++){
+            if(updatedWatchList[0]._id.toString()===movieId.toString()){
+                res.status(403).json({
+                    message:"You have already added this movie"
+                })
+                return
+            }
+        }
+        const movie=await Movie.findById(movieId);
+        updatedWatchList.push(movie)
+        user.watchList=updatedWatchList;
+        const updatedUser=await user.save()
+        res.status(200).json({
+            message:"Successfully added",
+            updatedUser
+        })
+    }catch(e){
+        res.status(500).json({
+            message:e.message
+        })
+    }
+    }else{
+        res.status(403).json({
+            message:"You are not allowed"
+        })
+    }
+}
+exports.removeWatchList= async (req,res,next)=>{
+    const movieId=req.query.movieId
+    if(req.userInfo.isAdmin ||  req.userInfo.userId){
+        try{
+        const user=await User.findById(req.userInfo.userId);
+        const watchList=user.watchList;
+        const updatedWatchList=[...watchList];
+        const newWatchList=updatedWatchList.filter(item=>item._id.toString()!==movieId.toString())
+        user.watchList=newWatchList;
+        const updatedUser=await user.save()
+        res.status(200).json({
+            message:"Successfully added",
+            updatedUser
+        })
+    }catch(e){
+        res.status(500).json({
+            message:e.message
+        })
+    }
+    }else{
+        res.status(403).json({
+            message:"You are not allowed"
+        })
+    }
+}
+
+exports.getWatchList= async(req,res,next)=>{
+    const type=req.query.type;
+    if(req.userInfo.id){
+        try{
+        const user=await User.findById(req.userInfo.id)
+        let watchList=[]
+        if(type==="series"){
+            for(let i=0;i<user.watchList.length;i++){
+                if(user.watchList[i].type==="series"){
+                    watchList.push(user.watchList[i])
+                }
+            }
+        }else if(type==="movie"){
+            for(let i=0;i<user.watchList.length;i++){
+                if(user.watchList[i].type==="series"){
+                    watchList.push(user.watchList[i])
+                }
+            }
+        }else{
+            for(let i=0;i<user.watchList.length;i++){
+               watchList.push(user.watchList[i])
+            }
+        }
+        res.status(200).json({
+            watchList
+        })
+    }catch(e){
+        res.status(500).json({
+            message:e.message
+        })
+    }
+    }else{
+        res.status(403).json({
+            message:"You ae not allwoed to see"
+        })
+    }
 }
