@@ -6,11 +6,11 @@ const userController=require("../controllers/user")
 router.get("/",isAthenticate,userController.getAllUsers)
 
 
-// Get Details of user:admin and user
-router.get("/:userId",isAthenticate,userController.getUserDetails)
-
 // User statistics : admin
 router.get("/stats",isAthenticate,userController.getUserStates)
+
+// Get Details of user:admin and user
+router.get("/:userId",isAthenticate,userController.getUserDetails)
 
 // Delete user:admin
 router.delete("/:userId",isAthenticate,userController.deleteUser)
