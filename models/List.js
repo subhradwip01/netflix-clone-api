@@ -13,6 +13,8 @@ const List=new mongoose.Schema({
         type:String
     },
     content:{
-        type: Array
+        type: Array,
     }
 })
+
+module.exports=mongoose.model("List",List)
