@@ -3,7 +3,9 @@
  const dotenv = require("dotenv")
  const bodyParser=require("body-parser")
  const authRouter=require("./routes/auth")
-
+ const userRouter=require("./routes/user")
+ const movieRouter=require("./routes/movie")
+ const listsRouter=require("./routes/lists")
 
 
 // Utils
@@ -17,15 +19,11 @@ const PORT=8080;
 
 
 // middlewere
-// body parser
 app.use(bodyParser.json())
-// auth
-app.use(authRouter)
-
-// admin
-
-// users
-
+app.use("/netflixApi/auth",authRouter)
+app.use("/netflixApi/users",userRouter)
+app.use("/netflixApi/movies",movieRouter)
+app.use("/netflixApi/lists",listsRouter)
 
 // Initializing Server and connictin DB
 app.listen(PORT,()=>{
