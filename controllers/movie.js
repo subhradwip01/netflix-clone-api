@@ -1,26 +1,16 @@
 const Movie=require("../models/Movie")
 
 exports.postNewMovie=async(req,res,next)=>{
+    console.log("movie")
     if(req.userInfo.isAdmin){
-        const {title,desc,imgBanner,imgTitle,imgThumbnai,tariler,video,year,limit,genre,isSeries}=req.body;
-        if(!title){
+    
+        if(!req.body.title){
             res.status(403).json({
                 message:"Provide title of the movie"
             })
             try{
-                const movie=new Movie({
-                    title,
-                    desc,
-                    imgBanner,
-                    imgTitle,
-                    tariler,
-                    video,
-                    year,
-                    limit,
-                    genre,
-                    isSeries
-                })
-
+                const movie=new Movie(req.body)
+                console.log("save")
                 const savedMovie=await movie.save()
                 res.status(200).json({
                     message:"Movie added successfully",
