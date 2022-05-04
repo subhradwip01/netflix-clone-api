@@ -181,10 +181,10 @@ exports.getUserStates=async (req,res,next)=>{
 }
 
 exports.addWatchList= async (req,res,next)=>{
-    const movieId=req.query.movieId
+    const movieId=req.body.movieId
     if(req.userInfo.isAdmin ||  req.userInfo.userId){
         try{
-        const user=await User.findById(req.userInfo.userId);
+        const user=await User.findById(req.userInfo.id);
         const watchList=user.watchList;
         const updatedWatchList=[...watchList];
         for(let i=0;i<updatedWatchList.length;i++){
@@ -196,6 +196,7 @@ exports.addWatchList= async (req,res,next)=>{
             }
         }
         const movie=await Movie.findById(movieId);
+        console.log(movie,movieId)
         updatedWatchList.push(movie)
         user.watchList=updatedWatchList;
         const updatedUser=await user.save()
@@ -215,17 +216,17 @@ exports.addWatchList= async (req,res,next)=>{
     }
 }
 exports.removeWatchList= async (req,res,next)=>{
-    const movieId=req.query.movieId
+    const movieId=req.body.movieId
     if(req.userInfo.isAdmin ||  req.userInfo.userId){
         try{
-        const user=await User.findById(req.userInfo.userId);
+        const user=await User.findById(req.userInfo.id);
         const watchList=user.watchList;
         const updatedWatchList=[...watchList];
         const newWatchList=updatedWatchList.filter(item=>item._id.toString()!==movieId.toString())
         user.watchList=newWatchList;
         const updatedUser=await user.save()
         res.status(200).json({
-            message:"Successfully added",
+            message:"Successfully deleted",
             updatedUser
         })
     }catch(e){
@@ -248,19 +249,25 @@ exports.getWatchList= async(req,res,next)=>{
         let watchList=[]
         if(type==="series"){
             for(let i=0;i<user.watchList.length;i++){
-                if(user.watchList[i].type==="series"){
-                    watchList.push(user.watchList[i])
+                const movie=await Movie.findById(user.watchList[i])
+                console.log(movie)
+                if(movie.isSeries){
+                    watchList.push(movie)
                 }
             }
         }else if(type==="movie"){
             for(let i=0;i<user.watchList.length;i++){
-                if(user.watchList[i].type==="series"){
-                    watchList.push(user.watchList[i])
+                const movie=await Movie.findById(user.watchList[i])
+                console.log(movie)
+                if(!movie.isSeries){
+                    watchList.push(movie)
                 }
             }
         }else{
             for(let i=0;i<user.watchList.length;i++){
-               watchList.push(user.watchList[i])
+                const movie=await Movie.findById(user.watchList[i])
+                console.log(movie)
+               watchList.push(movie)
             }
         }
         res.status(200).json({
