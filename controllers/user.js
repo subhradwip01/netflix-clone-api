@@ -119,7 +119,7 @@ exports.getAllUsers = async (req,res,next)=>{
     console.log(req.userInfo)
     if(req.userInfo.isAdmin){
         try{
-        const allUsers=latest ? await User.find().sort({_id:-1}).limit(10) : await User.find()
+        const allUsers=latest ? await User.find().sort({_id:-1}).limit(5) : await User.find()
         res.status(200).json({
             users:allUsers
         })
@@ -140,20 +140,6 @@ exports.getUserStates=async (req,res,next)=>{
     if(req.userInfo.isAdmin){
         const date=new Date();
     const lastYear=date.setFullYear(date.setFullYear()-1);
-    const months=[
-        "Januray",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-    ]
 
     try{
         const data=await User.aggregate([
