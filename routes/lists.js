@@ -13,4 +13,5 @@ router.delete("/:listId",isAthenticate,listController.deleteList)
 router.get("/find/:listId",isAthenticate,listController.getDetailsList)
 
 // Upadate movie list
+router.put("/:listId",isAthenticate,listController.postUpdateMovie)
 module.exports=router

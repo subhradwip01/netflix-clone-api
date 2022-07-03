@@ -22,9 +22,10 @@ exports.postList= async (req,res,next)=>{
 }
 
 exports.deleteList=async(req,res,next)=>{
+    const listId=req.params.listId
     if(req.userInfo.isAdmin){
         try{
-            await List.findByIdAndDelete(req.userInfo.isAdmin);
+            await List.findByIdAndDelete({ _id: listId });
             res.status(200).json({
                 message:"List delted successfully"
             })
@@ -42,7 +43,8 @@ exports.deleteList=async(req,res,next)=>{
 
 exports.getList=async (req,res,next)=>{
     if(req.userInfo.isAdmin || req.userInfo.id){
-        const {type,genre}=req.qurey;
+        const type = req.query.type;
+        const genre = req.query.genre;
         let list=[]
         
         try{
@@ -62,7 +64,7 @@ exports.getList=async (req,res,next)=>{
                 list = await List.aggregate([{$sample:{size:10}}])
             }
 
-            res.satus(200).json({
+            res.status(200).json({
                 list:list
             })
         }catch(e){
@@ -99,7 +101,32 @@ exports.getDetailsList=async(req,res,next)=>{
     }
 }
 
-
+exports.postUpdateMovie = async (req, res, next) => {
+    const listId = req.params.listId;
+    if (req.userInfo.isAdmin) {
+      try {
+        const updatedList = await List.findByIdAndUpdate(
+          listId,
+          {
+            $set: req.body,
+          },
+          { new: true }
+        );
+        res.status(200).json({
+          message: "Movie updated successfully",
+          updatedList,
+        });
+      } catch (e) {
+        res.status(500).json({
+          message: e.message,
+        });
+      }
+    } else {
+      res.json(403).json({
+        message: "Only admin can update movie",
+      });
+    }
+  };
 
 
 
