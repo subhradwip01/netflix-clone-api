@@ -9,11 +9,10 @@ exports.postNewMovie = async (req, res, next) => {
     }
     try {
       const movie = new Movie(req.body);
-      console.log("save");
       const savedMovie = await movie.save();
       res.status(200).json({
         message: "Movie added successfully",
-        savedMovie,
+        movie:savedMovie,
       });
     } catch (e) {
       res.status(500).json({
@@ -21,13 +20,14 @@ exports.postNewMovie = async (req, res, next) => {
       });
     }
   } else {
-    res.json(403).json({
+    res.staus(403).json({
       message: "Only admin can add movie",
     });
   }
 };
 exports.postUpdateMovie = async (req, res, next) => {
   const movieId = req.params.movieId;
+  console.log(movieId)
   if (req.userInfo.isAdmin) {
     try {
       const updatedMovie = await Movie.findByIdAndUpdate(
@@ -67,7 +67,7 @@ exports.postDeleteMovie = async (req, res, next) => {
       });
     }
   } else {
-    res.json(403).json({
+    res.status(403).json({
       message: "Only admin can delete movie",
     });
   }
@@ -114,7 +114,7 @@ exports.getMovies = async (req, res, next) => {
       });
     }
   } else {
-    res.json(403).json({
+    res.status(403).json({
       message: "Only admin can get all movies",
     });
   }
@@ -145,7 +145,7 @@ exports.getRandomMovie = async (req, res, next) => {
       });
     }
   } else {
-    res.json(403).json({
+    res.status(403).json({
       message: "Only admin can get all movies",
     });
   }

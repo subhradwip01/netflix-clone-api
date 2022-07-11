@@ -5,12 +5,13 @@ const Movie=require("../models/Movie");
 exports.updateUser= async (req,res,next)=>{
     // Only logged in user can update user and admin
     const userId=req.params.userId;
+    console.log(req.body)
     if(userId===req.userInfo.id || req.userInfo.isAdmin){
       // Getting all inputs from req.body
       const username=req.body.username;
       const email=req.body.email;
-      const password=req.body.password;
       const profilePic=req.body.profilePic;
+      const isAdmin=req.body.isAdmin;
       
       const existUser=await User.findById({_id:userId});
       if(!existUser){
@@ -41,13 +42,12 @@ exports.updateUser= async (req,res,next)=>{
         }
       }  
 
-    //New password hasing
+   
     try {
-       const hashedPass = await bcrypt.hash(password, process.env.SALT);
        existUser.username=username;
        existUser.email=email;
-       existUser.password=hashedPass;
        existUser.profilePic=profilePic;
+       existUser.isAdmin=req.userInfo.isAdmin ? isAdmin : false
        const updatedUser=await existUser.save()
        return res.status(201).json({
            message:"Updatation successfull",
@@ -120,8 +120,12 @@ exports.getAllUsers = async (req,res,next)=>{
     if(req.userInfo.isAdmin){
         try{
         const allUsers=latest ? await User.find().sort({_id:-1}).limit(5) : await User.find()
+        const users=allUsers.map(user=>{
+            const {password,...userInfo}=user._doc
+            return userInfo
+        })
         res.status(200).json({
-            users:allUsers
+            users:users
         })
     }catch(e){
         res.status(403).json({
@@ -266,7 +270,7 @@ exports.getWatchList= async(req,res,next)=>{
     }
     }else{
         res.status(403).json({
-            message:"You ae not allwoed to see"
+            message:"You are not allwoed to see"
         })
     }
 }

@@ -91,7 +91,6 @@ exports.postLogin=async(req,res,next)=>{
 
     })
    }catch(e){
-       console.log(e)
         const statusCode=e.statusCode || 500;
         let message
         if(statusCode===500){
