@@ -27,7 +27,7 @@ app.use("/netflixApi/lists",listsRouter)
 
 // Initializing Server and connictin DB
 app.listen(process.env.PORT||DEV_PORT,()=>{
-    console.log(`Server started at ${PORT}`)
+    console.log(`Server started at ${DEV_PORT}`)
     mongoose.connect(process.env.MONGODB_URI,
         {useNewUrlParser: true}
       ).then(()=>{
