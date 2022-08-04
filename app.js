@@ -14,7 +14,7 @@ const app=express();
 // Loading .env 
 dotenv.config();
 // Defing port number
-const PORT=8080;
+const DEV_PORT=8080;
 
 
 
@@ -26,7 +26,7 @@ app.use("/netflixApi/movies",movieRouter)
 app.use("/netflixApi/lists",listsRouter)
 
 // Initializing Server and connictin DB
-app.listen(PORT,()=>{
+app.listen(process.env.PORT||DEV_PORT,()=>{
     console.log(`Server started at ${PORT}`)
     mongoose.connect(process.env.MONGODB_URI,
         {useNewUrlParser: true}
