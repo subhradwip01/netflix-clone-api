@@ -1,6 +1,7 @@
  const express = require("express")
  const mongoose=require("mongoose")
  const dotenv = require("dotenv")
+ const cors = require('cors')
  const bodyParser=require("body-parser")
  const authRouter=require("./routes/auth")
  const userRouter=require("./routes/user")
@@ -11,6 +12,8 @@
 // Utils
 //  Creating express instance
 const app=express();
+// CORS
+app.use(cors())
 // Loading .env 
 dotenv.config();
 // Defing port number
