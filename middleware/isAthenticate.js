@@ -15,11 +15,11 @@ const isAthenticate=async (req,res,next)=>{
             res.status(401).json({
                 message:"Not a valid Auth token"
             })
+        }else{
+            req.userInfo=userInfo
+            next()
         }
-        req.userInfo=userInfo
-        next()
     })
-    
 }
 
 module.exports=isAthenticate

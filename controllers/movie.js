@@ -95,7 +95,7 @@ exports.getMovieDetails = async (req, res, next) => {
 
 exports.getMovies = async (req, res, next) => {
   const type = req.query.type;
-  if (req.userInfo.isAdmin || req.userInfo.id) {
+  if (req.userInfo?.isAdmin || req.userInfo?.id) {
     try {
       let allMovies;
       if (type == "series") {
@@ -122,7 +122,7 @@ exports.getMovies = async (req, res, next) => {
 
 exports.getRandomMovie = async (req, res, next) => {
   const type = req.query.type;
-  if (req.userInfo.isAdmin || req.userInfo.id) {
+  if (req.userInfo?.isAdmin || req.userInfo?.id) {
     try {
       let allMovies;
       if (type == "series") {

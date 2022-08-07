@@ -42,7 +42,7 @@ exports.deleteList=async(req,res,next)=>{
 }
 
 exports.getList=async (req,res,next)=>{
-    if(req.userInfo.isAdmin || req.userInfo.id){
+    if(req.userInfo?.isAdmin || req.userInfo?.id){
         const type = req.query.type;
         const genre = req.query.genre;
         let list=[]
