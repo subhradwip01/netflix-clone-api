@@ -23,6 +23,11 @@ const DEV_PORT=8080;
 
 // middlewere
 app.use(bodyParser.json())
+app.use("/test",((req,res,next)=>{
+  res.status(200).json({
+    message:"API working fine"
+  })
+}))
 app.use("/netflixApi/auth",authRouter)
 app.use("/netflixApi/users",userRouter)
 app.use("/netflixApi/movies",movieRouter)
